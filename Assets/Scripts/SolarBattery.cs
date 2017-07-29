@@ -15,7 +15,7 @@ public class SolarBattery : MonoBehaviour, ILightAffected
     /// </summary>
     private bool _hitThisFrame = false;
 
-    private float _charge;
+    public float _charge;
     /// <summary>
     /// The current charge of the battery
     /// </summary>
