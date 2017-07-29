@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
     {
         _frameDrain = ConstantDrain;
 
-        _updateMovement();
+        if(Battery.Charge > 0)
+            _updateMovement();
 
         // apply drain to battery
         Battery.Drain(_frameDrain * Time.deltaTime);
