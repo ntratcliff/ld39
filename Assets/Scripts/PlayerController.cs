@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour
 
     public HingeJoint2D RearWheel, FrontWheel;
 
+    public SolarBattery Battery;
+    public float ConstantDrain = 1f;
+    public float MovementDrain = 2f;
+    private float _frameDrain;
+
     // attached components
     private Rigidbody2D _body;
 
@@ -22,7 +27,12 @@ public class PlayerController : MonoBehaviour
     // apply forces in fixedupdate
     private void FixedUpdate()
     {
+        _frameDrain = ConstantDrain;
+
         _updateMovement();
+
+        // apply drain to battery
+        Battery.Drain(_frameDrain * Time.deltaTime);
     }
 
     private void _updateMovement()
@@ -33,6 +43,7 @@ public class PlayerController : MonoBehaviour
         {
             _body.AddForce(transform.right * Mathf.Sign(horizontal) * MovementForce);
             _clampSpeed();
+            _frameDrain += MovementDrain;
         }
 
         // apply brakes when not moving
