@@ -109,9 +109,9 @@ public class LightSource : MonoBehaviour
 
 			if (invokeAffected 
 				&& hit.transform != null
-				&& hit.transform.GetComponentInChildren<ILightAffected>() != null)
+				&& hit.collider.transform.GetComponent<ILightAffected>() != null)
 			{
-				hit.transform.GetComponentInChildren<ILightAffected>().OnLightHit(); // TODO: check more generically
+				hit.collider.transform.GetComponent<ILightAffected>().OnLightHit(); 
 			}
 
 		}

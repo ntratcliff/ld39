@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public HingeJoint2D RearWheel, FrontWheel;
 
     public SolarBattery Battery;
+    public BatteryStatusMonitor StatusMonitor;
     public float ConstantDrain = 1f;
     public float MovementDrain = 2f;
     private float _frameDrain;
@@ -29,7 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         _frameDrain = ConstantDrain;
 
-        if(Battery.Charge > 0)
+        if(StatusMonitor.Status != MonitorStatus.Dead)
             _updateMovement();
 
         // apply drain to battery

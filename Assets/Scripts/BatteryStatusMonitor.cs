@@ -17,7 +17,11 @@ public class BatteryStatusMonitor : MonoBehaviour
     public float MehMin     = 0.3f;
     public float BadMin     = 0f;
 
-    public MonitorStatus _currentStatus;
+    private MonitorStatus _currentStatus;
+    public MonitorStatus Status
+    {
+        get { return _currentStatus; }
+    }
 
     private void Start()
     {
