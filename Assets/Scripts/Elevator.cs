@@ -7,6 +7,7 @@ public class Elevator : MonoBehaviour
     public SolarBattery Battery;
     public BatteryStatusMonitor StatusMonitor;
     public float ConstantDrain;
+    public SpriteRenderer Hydraulics;
 
     public Vector2 PoweredPos;
     public Vector2 DeadPos;
@@ -31,6 +32,7 @@ public class Elevator : MonoBehaviour
         }
 
         _lerpToTarget();
+        _updateHydraulics();
 
         Battery.Drain(ConstantDrain * Time.deltaTime);
     }
@@ -50,6 +52,20 @@ public class Elevator : MonoBehaviour
 
         _lerpTime += _step * Time.deltaTime;
         transform.position = Vector2.Lerp(_startPos, _targetPos, _lerpTime);
+
+    }
+    
+    private void _updateHydraulics()
+    {
+        if (Hydraulics == null) return;
+
+        Vector2 size = Hydraulics.size;
+
+        size.y = ((Vector2)transform.position - DeadPos).magnitude;
+        size.y = Mathf.Clamp(size.y, 0, float.PositiveInfinity);
+
+        Hydraulics.size = size;
+
     }
 
     private void OnDrawGizmos()
