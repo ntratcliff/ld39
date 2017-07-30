@@ -32,6 +32,11 @@ public class PlayerController : MonoBehaviour
 
         if(StatusMonitor.Status != MonitorStatus.Dead)
             _updateMovement();
+        else
+        {
+            RearWheel.useMotor = false;
+            FrontWheel.useMotor = false;
+        }
 
         // apply drain to battery
         Battery.Drain(_frameDrain * Time.deltaTime);

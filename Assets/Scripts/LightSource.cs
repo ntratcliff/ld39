@@ -7,19 +7,30 @@ public class LightSource : MonoBehaviour
 	public float RaysPerDegree = 1; // resolution of raycasting
 	public float Range = 45f; // range (in degrees) of raycast
     public GameObject LightObject;
+    public LayerMask RaycastLayers;
 	private int _numRays; // number of rays to be cast
 	private float _degreeStep;
     private Mesh _mesh;
+    private bool _initialized;
 
 	// Use this for initialization
 	void Start () 
 	{
+        _init();
+	}
+
+    private void _init()
+    {
 		_numRays = Mathf.RoundToInt(Range * RaysPerDegree);
 		_degreeStep = Range / _numRays;
 
         Vector2[] hitPoints = _castRays();
         _updateMesh(hitPoints);
-	}
+
+        LightObject.GetComponent<MeshRenderer>().enabled = true;
+
+        _initialized = true;
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -52,7 +63,7 @@ public class LightSource : MonoBehaviour
             _mesh = new Mesh();
 
             // set up game object
-            LightObject.GetComponent<MeshFilter>().sharedMesh = _mesh;
+            LightObject.GetComponent<MeshFilter>().mesh = _mesh;
         }
 
         _mesh.vertices = verticies;
@@ -100,7 +111,7 @@ public class LightSource : MonoBehaviour
 			Vector2 direction = _getDirection(i);
 			points[i] = (Vector2)transform.position + direction * 100;
 
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, float.PositiveInfinity, RaycastLayers.value);
 
 			if(hit.transform != null)
 			{
