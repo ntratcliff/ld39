@@ -53,10 +53,6 @@ public class BlockController : MonoBehaviour
             return;
         }
 
-        if (frontHit.transform)
-            Debug.LogFormat("Front: " + frontHit.transform.name);
-        if (rearHit.transform)
-            Debug.LogFormat("Rear: " + rearHit.transform.name);
 
         // check if we're on an elevator
         _onElevator = (frontHit.transform != null && frontHit.transform.tag == "Elevator")
