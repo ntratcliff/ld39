@@ -110,8 +110,8 @@ public class PlayerController : MonoBehaviour
 
         // cast rays downwards on front and back
         int layerMask = LayerMask.GetMask(new string[] { "Default", "Transparent", "LightOnly" });
-        RaycastHit2D frontHit = Physics2D.Raycast(transform.position + transform.right, -transform.up, 0.4f, layerMask);
-        RaycastHit2D rearHit = Physics2D.Raycast(transform.position - transform.right, -transform.up, 0.4f, layerMask);
+        RaycastHit2D frontHit = Physics2D.Raycast(transform.position + transform.right, -transform.up, 0.5f, layerMask);
+        RaycastHit2D rearHit = Physics2D.Raycast(transform.position - transform.right, -transform.up, 0.5f, layerMask);
         Debug.DrawLine(transform.position, transform.position - (transform.up * 0.4f));
 
         // check if we're on the ground
