@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         {
             // decrease horizontal velocity
             Vector2 velocity = _body.velocity;
-            velocity.x /= 8;
+            velocity.x /= 16;
             _body.velocity = velocity;
             _velocityHalved = true;
         }
