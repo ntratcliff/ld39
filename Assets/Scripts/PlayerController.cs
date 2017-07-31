@@ -37,12 +37,24 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.Paused)
+            return;
+
         _updateGroundRaycasts();
     }
 
     // apply forces in fixedupdate
     private void FixedUpdate()
     {
+        if (GameManager.Instance.Paused)
+        {
+            if (_body.bodyType != RigidbodyType2D.Kinematic)
+                _body.bodyType = RigidbodyType2D.Kinematic;
+            return;
+        }
+        else if (_body.bodyType == RigidbodyType2D.Kinematic)
+            _body.bodyType = RigidbodyType2D.Dynamic;
+
         _frameDrain = ConstantDrain;
         _movedThisFrame = false;
 

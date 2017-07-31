@@ -39,6 +39,9 @@ public class SolarBattery : MonoBehaviour, ILightAffected
 
     private void Update()
     {
+        if (GameManager.Instance.Paused)
+            return;
+
         _hitThisFrame = false; // reset hit flag for this frame
         //TODO: it might be best to reset the flag with a message sent from GameManager
     }

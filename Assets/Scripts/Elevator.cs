@@ -18,8 +18,16 @@ public class Elevator : MonoBehaviour
     private float _step;
     private float _lerpTime;
 
+    private void Start()
+    {
+        _updateHydraulics();
+    }
+
     private void Update()
     {
+        if (GameManager.Instance.Paused)
+            return;
+
         if(StatusMonitor.Status == MonitorStatus.Dead
             && _targetPos != DeadPos)
         {

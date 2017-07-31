@@ -35,6 +35,9 @@ public class LightSource : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+        if (GameManager.Instance.Paused)
+            return;
+
 		Vector2[] hitPoints = _castRays();
         _updateMesh(hitPoints);
 	}
