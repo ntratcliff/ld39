@@ -24,6 +24,12 @@ public class PlayerController : MonoBehaviour
     private Vector2 _lastElevatorPos;
     private Transform _currentElevator;
 
+    // movement
+    private bool _onGround;
+    private bool _movedThisFrame;
+    private bool _velocityHalved;
+    
+
     private void Start()
     {
         _body = GetComponent<Rigidbody2D>();
@@ -31,21 +37,36 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        _updateElevator();
+        _updateGroundRaycasts();
     }
 
     // apply forces in fixedupdate
     private void FixedUpdate()
     {
         _frameDrain = ConstantDrain;
+        _movedThisFrame = false;
 
-        if(StatusMonitor.Status != MonitorStatus.Dead)
+        if(StatusMonitor.Status != MonitorStatus.Dead && _onGround)
             _updateMovement();
         else
         {
             RearWheel.useMotor = false;
             FrontWheel.useMotor = false;
         }
+
+        if(!_movedThisFrame && !_velocityHalved)
+        {
+            // decrease horizontal velocity
+            Vector2 velocity = _body.velocity;
+            velocity.x /= 8;
+            _body.velocity = velocity;
+            _velocityHalved = true;
+        }
+        else if (_movedThisFrame)
+        {
+            _velocityHalved = false;
+        }
+
 
         // apply drain to battery
         Battery.Drain(_frameDrain * Time.deltaTime);
@@ -57,9 +78,12 @@ public class PlayerController : MonoBehaviour
 
         if(horizontal != 0)
         {
-            _body.AddForce(transform.right * Mathf.Sign(horizontal) * MovementForce);
+            Vector2 direction = transform.right * Mathf.Sign(horizontal) * MovementForce;
+            _body.AddForce(direction);
+            _body.AddForce(-transform.up * MovementForce * 2f);
             _clampSpeed();
             _frameDrain += MovementDrain;
+            _movedThisFrame = true;
         }
 
         // apply brakes when not moving
@@ -67,15 +91,25 @@ public class PlayerController : MonoBehaviour
         FrontWheel.useMotor = horizontal == 0;
     }
 
-    private void _updateElevator()
+    private void _updateGroundRaycasts()
     {
         // preserve last frame's elevator flag
         bool onElevatorLastFrame = _onElevator;
 
         // cast rays downwards on front and back
-        int layerMask = LayerMask.GetMask(new string[] { "Default" });
-        RaycastHit2D frontHit = Physics2D.Raycast(transform.position + transform.right, -transform.up, 0.5f, layerMask);
-        RaycastHit2D rearHit = Physics2D.Raycast(transform.position - transform.right, -transform.up, 0.5f, layerMask);
+        int layerMask = LayerMask.GetMask(new string[] { "Default", "Transparent", "LightOnly" });
+        RaycastHit2D frontHit = Physics2D.Raycast(transform.position + transform.right, -transform.up, 0.4f, layerMask);
+        RaycastHit2D rearHit = Physics2D.Raycast(transform.position - transform.right, -transform.up, 0.4f, layerMask);
+        Debug.DrawLine(transform.position, transform.position - (transform.up * 0.4f));
+
+        // check if we're on the ground
+        _onGround = frontHit.transform != null || rearHit.transform != null;
+
+        // stop here if we're not on the ground
+        if (!_onGround)
+        {
+            return;
+        }
 
         // check if we're on an elevator
         _onElevator = (frontHit.transform != null && frontHit.transform.tag == "Elevator")
