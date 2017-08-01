@@ -20,6 +20,7 @@ public class Elevator : MonoBehaviour
 
     private void Start()
     {
+        _targetPos = transform.position;
         _updateHydraulics();
     }
 
